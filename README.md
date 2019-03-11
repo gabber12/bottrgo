@@ -10,7 +10,7 @@ Features
 
 In Action
 =========
-[[https://github.com/gabber12/tweety/blob/master/img/inaction.png|alt=terminal]]
+![](https://github.com/gabber12/bottrgo/raw/master/img/inaction.png|alt=terminal)
 
 How to Use
 ========
