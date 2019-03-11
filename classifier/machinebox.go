@@ -24,11 +24,12 @@ type sentence struct {
 }
 
 //Classify Returns
-func (m *MachineBox) Classify(text string) *Classification {
+func (m *MachineBox) Classify(text string) (*Classification, error) {
 	TEXT_CLASSIFICATION_API := fmt.Sprintf("%s/textbox/check", m.HostPort)
 	resp, err := http.PostForm(TEXT_CLASSIFICATION_API, url.Values{"text": []string{text}})
 	if err != nil {
 		logrus.Errorf("Couldnot reach Machinebox server %v", err)
+		return nil, fmt.Errorf("Could not reach MachineBox Server %v", err)
 	}
 	sen := response{}
 	body, err := ioutil.ReadAll(resp.Body)
@@ -46,5 +47,5 @@ func (m *MachineBox) Classify(text string) *Classification {
 	}
 	sentimentScore := sentiment / float64(len(sen.Sentences))
 
-	return &Classification{SentimentScore: sentimentScore, Entities: entities}
+	return &Classification{SentimentScore: sentimentScore, Entities: entities}, nil
 }

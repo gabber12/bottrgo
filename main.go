@@ -109,11 +109,13 @@ func main() {
 		if *classify {
 			var cls classifier.Service
 			cls = &classifier.MachineBox{HostPort: *machineBoxURL}
-			classification = cls.Classify(tweet.FullText)
-			sentiment := getSentiment(classification.SentimentScore)
-			fmt.Printf("%s\n", yellow("Sentiment ", sentiment))
-			if !filterExpression(tweet, classification) {
-				return
+			classification, err := cls.Classify(tweet.FullText)
+			if err == nil {
+				sentiment := getSentiment(classification.SentimentScore)
+				fmt.Printf("%s\n", yellow("Sentiment ", sentiment))
+				if !filterExpression(tweet, classification) {
+					return
+				}
 			}
 		}
 

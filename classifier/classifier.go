@@ -1,7 +1,7 @@
 package classifier
 
 type Service interface {
-	Classify(text string) (cls *Classification)
+	Classify(text string) (cls *Classification, err error)
 }
 
 type Classification struct {
