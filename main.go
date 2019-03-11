@@ -63,35 +63,26 @@ type Rule interface {
 }
 type FirstStrategy struct{}
 
-func (FirstStrategy) evaluate(tweet twitter.Tweet, cls classifier.Classification) bool {
-	return cls.SentimentScore > 0.8
-}
-func (FirstStrategy) action() Action {
-	return RETWEET
-}
-func handleAction(tweet *twitter.Tweet, cls *classifier.Classification) {
-	// logrus.Infof("Tweet Received %s", tweet)
-	rule := FirstStrategy{}
-	if rule.evaluate(*tweet, *cls) {
-		rule.action()
-	}
-}
-func filterExpression(tweet *twitter.Tweet, classification *classifier.Classification) bool {
-	return classification.SentimentScore > 0.8
-}
 func getSentiment(score float64) string {
 	if score > 0.5 {
 		return "😀"
 	}
 	return "😟"
 }
+func printTweet(tweet *twitter.Tweet) {
+	cyan := color.New(color.FgCyan).SprintFunc()
+	yellow := color.New(color.FgYellow).SprintFunc()
+	blue := color.New(color.FgBlue).SprintFunc()
+	fmt.Printf("\n%s\n@%s %s %s\n%s\n", blue("-----------"), cyan(tweet.User.ScreenName), yellow("::"), tweet.FullText, blue("-----------"))
+}
+func printSentiment(sentiment string) {
+	yellow := color.New(color.FgYellow).SprintFunc()
+	fmt.Printf("%s\n", yellow("Sentiment ", sentiment))
+}
 func main() {
 	logrus.Info("Starting Twitter Sevice ...\n")
 	classify := flag.Bool("classify", false, "Hash tag list to filter by")
 	machineBoxURL := flag.String("mbHost", "http://localhost:8080", "Machine Box Url")
-
-	// botConfig := getConfigByFlag()
-	// commentPool := flag.String("commentList", "", "Hash tag list to filter by")
 
 	service := twitter.Service(getTwitterAuthConfig())
 	textFilter := flag.String("textFilter", "", "Hash tag list to filter by")
@@ -100,26 +91,17 @@ func main() {
 	flag.Parse()
 
 	service.FilteredStream(getFilterConfig(textFilter, locationFilter, userFilter), func(tweet *twitter.Tweet) {
-		cyan := color.New(color.FgCyan).SprintFunc()
-		yellow := color.New(color.FgYellow).SprintFunc()
-		blue := color.New(color.FgBlue).SprintFunc()
-		fmt.Printf("\n%s\n@%s %s %s\n%s\n", blue("-----------"), cyan(tweet.User.ScreenName), yellow("::"), tweet.FullText, blue("-----------"))
 
-		classification := &classifier.Classification{}
+		printTweet(tweet)
 		if *classify {
 			var cls classifier.Service
 			cls = &classifier.MachineBox{HostPort: *machineBoxURL}
 			classification, err := cls.Classify(tweet.FullText)
 			if err == nil {
 				sentiment := getSentiment(classification.SentimentScore)
-				fmt.Printf("%s\n", yellow("Sentiment ", sentiment))
-				if !filterExpression(tweet, classification) {
-					return
-				}
+				printSentiment(sentiment)
 			}
 		}
-
-		handleAction(tweet, classification)
 
 	})
 	logrus.Info("Service Stopped\n")
