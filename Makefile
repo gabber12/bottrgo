@@ -9,4 +9,6 @@ clean:
 	rm -rvf tweety
 build_docker:
 	@echo "Building Project ..."
-	docker build -it tweety/tweety .
+	docker build -t tweety .
+
+

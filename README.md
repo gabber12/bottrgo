@@ -21,6 +21,18 @@ How to Use
 make build
 ```
 
+#### Setup Environment Variables
+
+Get your credentials to use twitter api at http://apps.twitter.com
+```
+export TWITTER_CONSUMER_KEY=
+export TWITTER_CONSUMER_SECRET=
+export TWITTER_ACCESS_TOKEN=
+export TWITTER_ACCESS_TOKEN_SECRET=
+```
+
+## Usage
+
 ### Stream Filter 
 ```
  ./tweety -textFilter "#cats"       
@@ -31,3 +43,13 @@ make build
  ./tweety -textFilter "#cats" -classify -mbHost "http://localhost:80
 90"         
 ```
+
+### Complete list of Flags
+
+```
+ ./tweety -textFilter "#cats|#dogs" -locationFilter "-74,40,-73,41" -userFilter "userId" -classify -mbHost "http://localhost:80
+90"  
+```
+
+## Notes
+Checkout https://machinebox.io.
