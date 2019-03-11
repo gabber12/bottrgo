@@ -10,7 +10,7 @@ Features
 
 In Action
 =========
-![](https://github.com/gabber12/bottrgo/raw/master/img/inaction.png|alt=terminal)
+![Terminal](https://github.com/gabber12/bottrgo/raw/master/img/inaction.png)
 
 How to Use
 ========
